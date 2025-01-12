@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id         String     @id @default(uuid())
+  rideId     String
+  reviewerId String
+  revieweeId String
+  rating     Int
+  comment    String?
+  type       ReviewType
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+enum ReviewType {
+  DRIVER
+  RIDER
+}
