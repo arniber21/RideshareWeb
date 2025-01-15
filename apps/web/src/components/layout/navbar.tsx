@@ -105,6 +105,9 @@ export function Navbar() {
                     <DropdownMenuItem>
                       <Link href="/settings" className="w-full">Settings</Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/reviews" className="w-full">My Reviews</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       Logout
                     </DropdownMenuItem>

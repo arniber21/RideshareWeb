@@ -12,6 +12,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { getUserRating } from '@/lib/api/reviews';
+import { Star } from 'lucide-react';
+import Link from 'next/link';
 
 interface Ride {
   id: string;
@@ -39,6 +42,34 @@ interface Ride {
       avatar?: string;
     };
   }>;
+}
+
+function DriverRating({ driverId }: { driverId: string }) {
+  const [rating, setRating] = useState<{ rating: number; count: number } | null>(null);
+
+  useEffect(() => {
+    const loadRating = async () => {
+      try {
+        const response = await getUserRating(driverId, 'DRIVER');
+        setRating(response.data);
+      } catch (error) {
+        console.error('Failed to load driver rating:', error);
+      }
+    };
+
+    loadRating();
+  }, [driverId]);
+
+  if (!rating) return null;
+
+  return (
+    <div className="flex items-center mt-1">
+      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+      <span className="text-sm text-gray-600 ml-1">
+        {rating.rating.toFixed(1)} ({rating.count} reviews)
+      </span>
+    </div>
+  );
 }
 
 function RideDetailsContent() {
@@ -172,10 +203,17 @@ function RideDetailsContent() {
                       {ride.driver.name?.charAt(0)?.toUpperCase() || ride.driver.email?.charAt(0)?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
+                  <div className="flex-grow">
                     <p className="text-sm font-medium text-gray-900">{ride.driver.name}</p>
                     <p className="text-sm text-gray-600">{ride.driver.email}</p>
+                    <DriverRating driverId={ride.driver.id} />
                   </div>
+                  <Link
+                    href={`/rides/${ride.id}/reviews`}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    View Reviews
+                  </Link>
                 </div>
               </div>
 

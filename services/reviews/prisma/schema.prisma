@@ -16,11 +16,19 @@ model Review {
   rideId      String
   reviewerId  String
   revieweeId  String
-  rating      Int
-  comment     String?
+  rating      Int       @db.SmallInt
+  comment     String?   @db.Text
   type        ReviewType
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  isReported  Boolean   @default(false)
+  reportReason String?  @db.Text
+  isVisible   Boolean   @default(true)
+
+  @@index([rideId])
+  @@index([reviewerId])
+  @@index([revieweeId])
+  @@index([type])
 }
 
 enum ReviewType {
