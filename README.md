@@ -9,114 +9,188 @@ Avec is a modern rideshare platform built specifically for university communitie
   - Real-time ride status updates
   - Flexible booking system
   - Seat availability tracking
+  - Route optimization and matching
 
 - **User System**
-  - Secure authentication
-  - User profiles with ratings
-  - Driver/rider role management
+  - Multi-factor authentication
+  - OAuth 2.0 integration (Google, Microsoft)
+  - Role-based access control (RBAC)
+  - JWT-based session management
+  - Refresh token rotation
   - Profile customization
 
 - **Reviews & Ratings**
   - Rate drivers and passengers
   - Detailed review system
-  - Aggregate ratings
-  - Review moderation
+  - Aggregate ratings with weighted algorithms
+  - Review moderation with AI content filtering
+  - Anti-spam protection
 
 - **Real-time Communication**
-  - Live chat between users
-  - Ride status notifications
-  - Booking confirmations
+  - WebSocket-based live chat
+  - Server-Sent Events for notifications
+  - Message persistence with Redis
+  - Typing indicators
+  - Read receipts
 
 - **Payment Integration** (Planned)
-  - Secure payment processing
-  - Multiple payment methods
-  - Automated refunds
-  - Payment history
+  - Stripe Connect integration
+  - Multi-currency support
+  - Automated refunds and disputes
+  - Payment escrow system
+  - Transaction history
 
 ## 🛠 Tech Stack
 
-### Frontend
-- **Framework**: Next.js 14 (React)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: React Hooks
-- **UI Components**:
-  - Radix UI (Accessible components)
-  - Lucide Icons
-  - Sonner (Toast notifications)
-  - Date-fns (Date formatting)
+### Frontend Architecture
+- **Framework**: Next.js 14 with App Router
+  - Server Components for improved performance
+  - React Server Actions for form handling
+  - Streaming and Suspense for progressive loading
+- **State Management**: 
+  - React Context for global state
+  - SWR for data fetching and caching
+  - Optimistic updates for better UX
+- **Styling**: 
+  - Tailwind CSS with custom configuration
+  - Radix UI primitives for accessibility
+  - CSS Modules for component-specific styles
+- **Performance**:
+  - Dynamic imports for code splitting
+  - Image optimization with next/image
+  - Edge runtime for API routes
+  - Incremental Static Regeneration
 
-### Backend
-- **Architecture**: Microservices
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Language**: TypeScript
-- **Database**: PostgreSQL
-- **ORM**: Prisma
-- **Caching**: Redis
-- **Message Queue**: RabbitMQ
+### Backend Architecture
+- **Microservices**:
+  - Event-driven architecture
+  - Service discovery via Consul
+  - Circuit breakers with Hystrix
+  - Load balancing with NGINX
+- **API Design**:
+  - RESTful endpoints with OpenAPI specs
+  - GraphQL gateway for complex queries
+  - WebSocket for real-time features
+  - Rate limiting and throttling
+- **Data Layer**:
+  - PostgreSQL with read replicas
+  - Redis for caching and sessions
+  - RabbitMQ for event bus
+  - Prisma for type-safe queries
+- **Security**:
+  - OAuth 2.0 / OpenID Connect
+  - JWT with RSA signatures
+  - CORS with specific origins
+  - XSS/CSRF protection
+  - Rate limiting per IP/user
 
 ### Infrastructure
-- **Package Manager**: pnpm
-- **Monorepo Tool**: Turborepo
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes
-- **API Gateway**: Express Gateway
+- **Container Orchestration**:
+  - Kubernetes with custom operators
+  - Helm charts for deployment
+  - Istio service mesh
+  - Prometheus monitoring
+- **CI/CD**:
+  - GitHub Actions workflows
+  - Automated testing
+  - Semantic versioning
+  - Blue-green deployments
+- **Monitoring**:
+  - ELK stack for logging
+  - Prometheus metrics
+  - Grafana dashboards
+  - Error tracking with Sentry
 
 ## 📦 Project Structure
 
-```
+\`\`\`
 avec/
 ├── apps/
 │   └── web/                 # Next.js web application
+│       ├── app/            # App router pages
+│       ├── components/     # React components
+│       ├── lib/           # Utilities and hooks
+│       └── styles/        # Global styles
 ├── packages/
-│   ├── common/             # Shared types, utilities, constants
-│   ├── ui/                 # Shared UI components
-│   └── api-client/         # Generated API client
+│   ├── common/            # Shared code
+│   │   ├── types/        # TypeScript definitions
+│   │   ├── utils/        # Shared utilities
+│   │   └── constants/    # Shared constants
+│   ├── ui/               # Component library
+│   │   ├── atoms/        # Basic components
+│   │   ├── molecules/    # Composite components
+│   │   └── organisms/    # Complex components
+│   └── api-client/       # Generated API client
 ├── services/
-│   ├── auth/              # Authentication service
-│   ├── rides/             # Ride management service
-│   ├── users/             # User service
-│   ├── chat/              # Real-time chat service
-│   ├── reviews/           # Review service
-│   └── payments/          # Payment service (planned)
+│   ├── auth/             # Authentication service
+│   │   ├── src/
+│   │   ├── prisma/      # Database schema
+│   │   └── tests/       # Service tests
+│   ├── rides/           # Ride management
+│   ├── users/           # User management
+│   ├── chat/            # Real-time chat
+│   ├── reviews/         # Review system
+│   └── payments/        # Payment processing
 └── infrastructure/
-    ├── terraform/         # Infrastructure as Code
-    ├── docker/            # Docker configurations
-    └── k8s/               # Kubernetes manifests
-```
+    ├── terraform/       # IaC definitions
+    ├── docker/          # Container configs
+    └── k8s/             # K8s manifests
+\`\`\`
 
-## 🔧 Services
+## 🔧 Service Architecture
 
 ### Auth Service
-- JWT-based authentication
-- Role-based access control
-- OAuth integration (planned)
-- Session management
+- **OAuth 2.0 Flow**:
+  - Authorization Code with PKCE
+  - Refresh token rotation
+  - JWT signing with RS256
+  - Token revocation endpoint
+- **Security Features**:
+  - Password hashing with Argon2
+  - Rate limiting on auth endpoints
+  - IP-based blocking
+  - Audit logging
+- **Session Management**:
+  - Redis session store
+  - Secure cookie handling
+  - Device fingerprinting
+  - Concurrent session control
 
 ### Rides Service
-- Ride CRUD operations
-- Search and filtering
-- Booking management
-- Route optimization
+- **Core Features**:
+  - Geospatial search with PostGIS
+  - Real-time availability updates
+  - Booking state machine
+  - Conflict resolution
+- **Integration Points**:
+  - Event publishing to RabbitMQ
+  - User service for profiles
+  - Payment service for transactions
+  - Notification service for alerts
 
 ### Reviews Service
-- Review management
-- Rating calculations
-- Moderation system
-- Reporting functionality
+- **Features**:
+  - Weighted rating algorithms
+  - Spam detection
+  - Content moderation
+  - Report handling
+- **Data Model**:
+  - Hierarchical review structure
+  - Metadata storage
+  - Audit trail
+  - Soft deletion
 
 ### Chat Service
-- Real-time messaging
-- Message persistence
-- Typing indicators
-- Read receipts
-
-### Users Service
-- Profile management
-- Preference settings
-- Activity tracking
-- Verification system
+- **WebSocket Implementation**:
+  - Connection pooling
+  - Room management
+  - Message queuing
+  - Presence tracking
+- **Storage**:
+  - Message persistence
+  - Read receipts
+  - User presence
+  - Chat history
 
 ## 🚀 Getting Started
 
@@ -124,8 +198,9 @@ avec/
 - Node.js 18+
 - pnpm 8+
 - PostgreSQL 14+
-- Redis
-- Docker (optional)
+- Redis 7+
+- Docker & Docker Compose
+- Kubernetes (optional)
 
 ### Installation
 
@@ -164,33 +239,56 @@ pnpm dev
 - \`pnpm db:push\`: Push database schema changes
 - \`pnpm db:generate\`: Generate Prisma client
 
-## 🔒 Environment Variables
+## 🔒 Security Configuration
 
-Each service requires specific environment variables. Key variables include:
-
-### Web App
+### OAuth 2.0 Setup
 \`\`\`env
+# OAuth 2.0 Configuration
+OAUTH_GOOGLE_CLIENT_ID=your-client-id
+OAUTH_GOOGLE_CLIENT_SECRET=your-client-secret
+OAUTH_GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/callback/google
+
+OAUTH_MICROSOFT_CLIENT_ID=your-client-id
+OAUTH_MICROSOFT_CLIENT_SECRET=your-client-secret
+OAUTH_MICROSOFT_CALLBACK_URL=http://localhost:3000/api/auth/callback/microsoft
+
+# JWT Configuration
+JWT_PRIVATE_KEY=path/to/private.key
+JWT_PUBLIC_KEY=path/to/public.key
+JWT_ALGORITHM=RS256
+JWT_ACCESS_TOKEN_EXPIRES_IN=15m
+JWT_REFRESH_TOKEN_EXPIRES_IN=7d
+
+# Security Headers
+SECURITY_CORS_ORIGINS=http://localhost:3000,https://avec.example.com
+SECURITY_RATE_LIMIT_WINDOW=15m
+SECURITY_RATE_LIMIT_MAX_REQUESTS=100
+\`\`\`
+
+### Service Environment Variables
+\`\`\`env
+# Web App
 NEXT_PUBLIC_AUTH_API_URL=http://localhost:3001
 NEXT_PUBLIC_RIDES_API_URL=http://localhost:3002
 NEXT_PUBLIC_REVIEWS_API_URL=http://localhost:3003
-\`\`\`
+NEXT_PUBLIC_CHAT_API_URL=http://localhost:3004
 
-### Services
-\`\`\`env
+# Microservices
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/service_name
-JWT_SECRET=your-secret-key
-PORT=3000
-NODE_ENV=development
+REDIS_URL=redis://localhost:6379
+RABBITMQ_URL=amqp://localhost:5672
 \`\`\`
 
 ## 📈 Future Enhancements
 
-- Mobile applications (iOS/Android)
-- Advanced route optimization
+- Mobile applications (React Native)
+- Advanced route optimization with ML
 - AI-powered ride matching
-- Social features and groups
+- Blockchain-based reputation system
+- Real-time analytics dashboard
+- University SSO integration
 - Carbon footprint tracking
-- Integration with university systems
+- Social features and groups
 
 ## 🤝 Contributing
 
@@ -198,12 +296,4 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Team
-
-- Arnab Ghosh - Lead Developer
-
-## 📞 Support
-
-For support, please email support@avec-rideshare.com or join our Discord community. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
