@@ -12,7 +12,7 @@ Avec is a modern rideshare platform built specifically for university communitie
 
 - **User System**
   - Email and password authentication
-  - OAuth integration (planned)
+  - Google OAuth integration
   - JWT-based session management
   - Profile customization
 
@@ -123,6 +123,7 @@ avec/
 
 ### Auth Service
 - JWT-based authentication
+- Google OAuth 2.0 integration
 - Password hashing with bcrypt
 - Session management with Redis
 - Email verification
@@ -198,7 +199,7 @@ See \`.env.example\` for all required environment variables and their descriptio
 ## 📈 Future Enhancements
 
 - Mobile applications (React Native)
-- OAuth provider integration
+- Additional OAuth providers
 - Advanced ride matching
 - Real-time notifications
 - Payment processing
