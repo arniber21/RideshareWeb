@@ -88,7 +88,7 @@ Avec is a modern rideshare platform built specifically for university communitie
 
 ## 📦 Project Structure
 
-\`\`\`
+```
 avec/
 ├── apps/
 │   └── web/                 # Next.js web application
@@ -117,7 +117,7 @@ avec/
     ├── terraform/       # IaC definitions
     ├── docker/          # Container configs
     └── k8s/             # K8s manifests
-\`\`\`
+```
 
 ## 🔧 Service Architecture
 
